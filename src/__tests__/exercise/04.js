@@ -7,8 +7,7 @@ import userEvent from '@testing-library/user-event'
 import Login from '../../components/login'
 
 test('submitting the form calls onSubmit with username and password', async () => {
-  let submittedData
-  const handleSubmit = data => (submittedData = data)
+  const handleSubmit = jest.fn()
   render(<Login onSubmit={handleSubmit} />)
   const username = 'Bob'
   const password = 'password123'
@@ -17,8 +16,8 @@ test('submitting the form calls onSubmit with username and password', async () =
   await userEvent.type(screen.getByLabelText(/password/i), password)
   await userEvent.click(screen.getByRole('button', {name: /submit/i}))
 
-  expect(submittedData).toEqual({username, password})
-
+  expect(handleSubmit).toHaveBeenCalledWith({username, password})
+  expect(handleSubmit).toHaveBeenCalledTimes(1)
   //`toEqual` from Jest: 📜 https://jestjs.io/docs/en/expect#toequalvalue
 })
 
