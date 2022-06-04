@@ -10,14 +10,14 @@ test('submitting the form calls onSubmit with username and password', async () =
   let submittedData
   const handleSubmit = data => (submittedData = data)
   render(<Login onSubmit={handleSubmit} />)
-  const username = screen.getByLabelText(/username/i)
-  const password = screen.getByLabelText(/password/i)
+  const username = 'Bob'
+  const password = 'password123'
 
-  await userEvent.type(username, 'Bob')
-  await userEvent.type(password, 'test123')
+  await userEvent.type(screen.getByLabelText(/username/i), username)
+  await userEvent.type(screen.getByLabelText(/password/i), password)
   await userEvent.click(screen.getByRole('button', {name: /submit/i}))
 
-  expect(submittedData).toEqual({username: 'Bob', password: 'test123'})
+  expect(submittedData).toEqual({username, password})
 
   //`toEqual` from Jest: 📜 https://jestjs.io/docs/en/expect#toequalvalue
 })
