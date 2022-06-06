@@ -3,15 +3,15 @@
 
 import * as React from 'react'
 import {render, screen} from '@testing-library/react'
-import faker from 'faker'
+
 import userEvent from '@testing-library/user-event'
 import {build, fake} from '@jackfranklin/test-data-bot'
 import Login from '../../components/login'
 
 const buildLoginForm = build('Login', {
   fields: {
-    username: fake(f => f.internet.userName()),
-    password: fake(f => f.internet.password()),
+    username: fake(faker => faker.internet.userName()),
+    password: fake(faker => faker.internet.password()),
   },
 })
 
