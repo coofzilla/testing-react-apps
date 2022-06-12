@@ -16,13 +16,16 @@ const buildLoginForm = build({
   },
 })
 
-// 📜 https://mswjs.io/
-//get the server setup with an async function to handle the login POST request:
 const server = setupServer(
   rest.post(
     'https://auth-provider.example.com/api/login',
     async (req, res, ctx) => {
-      //respond with an JSON object that has the username.
+      if (!req.body.password) {
+        return res(ctx.status(400), ctx.json({message: 'password required'}))
+      }
+      if (!req.body.username) {
+        return res(ctx.status(400), ctx.json({message: 'username required'}))
+      }
       return res(ctx.json({username: req.body.username}))
     },
   ),
@@ -37,18 +40,21 @@ test(`logging in displays the user's username`, async () => {
 
   await userEvent.type(screen.getByLabelText(/username/i), username)
   await userEvent.type(screen.getByLabelText(/password/i), password)
-
   await userEvent.click(screen.getByRole('button', {name: /submit/i}))
 
-  // as soon as the user hits submit, we render a spinner to the screen. That
-  // spinner has an aria-label of "loading" for accessibility purposes, so
-  // 🐨 wait for the loading spinner to be removed using waitForElementToBeRemoved
-  // 📜 https://testing-library.com/docs/dom-testing-library/api-async#waitforelementtoberemoved
   await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
-
-  // once the login is successful, then the loading spinner disappears and
-  // we render the username.
-  // 🐨 assert that the username is on the screen
 
   expect(screen.getByText(username)).toBeInTheDocument()
 })
+
+// 📜 https://mswjs.io/
+//get the server setup with an async function to handle the login POST request:
+
+// as soon as the user hits submit, we render a spinner to the screen. That
+// spinner has an aria-label of "loading" for accessibility purposes, so
+// 🐨 wait for the loading spinner to be removed using waitForElementToBeRemoved
+// 📜 https://testing-library.com/docs/dom-testing-library/api-async#waitforelementtoberemoved
+
+// once the login is successful, then the loading spinner disappears and
+// we render the username.
+// 🐨 assert that the username is on the screen
